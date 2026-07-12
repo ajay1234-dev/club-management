@@ -121,10 +121,31 @@
   * {
     @apply border-border outline-ring/50;
   }
-  body {
-    @apply bg-background text-foreground;
-  }
   html {
     @apply font-sans;
+  }
+  body {
+    @apply bg-background text-foreground;
+    background-image:
+      radial-gradient(circle at 10% 20%, rgb(0 0 0 / 0.03) 0 1px, transparent 1px),
+      radial-gradient(circle at 90% 80%, rgb(0 0 0 / 0.04) 0 1px, transparent 1px),
+      linear-gradient(180deg, rgb(255 255 255 / 0.96), rgb(250 247 240 / 0.98));
+    background-attachment: fixed;
+  }
+  a {
+    @apply transition-colors;
+  }
+}
+
+@layer utilities {
+  .paper-card {
+    @apply rounded-3xl border border-black/10 bg-white/85 shadow-[0_18px_50px_-28px_rgba(0,0,0,0.35)] backdrop-blur;
+  }
+
+  .sketch-outline {
+    box-shadow:
+      0 1px 0 rgb(255 255 255 / 0.6) inset,
+      0 0 0 1px rgb(0 0 0 / 0.04),
+      0 12px 30px -18px rgb(0 0 0 / 0.35);
   }
 }
