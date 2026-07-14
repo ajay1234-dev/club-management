@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { loginSchema } from "@/lib/validators/auth";
@@ -11,6 +11,13 @@ import { ROLE_LABELS, ROLE_VALUES } from "@/lib/constants/roles";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -81,22 +88,38 @@ export function LoginForm({
         <Label htmlFor="role" className={errors.role ? "text-destructive" : ""}>
           Role
         </Label>
-        <select
-          id="role"
-          className={cn(
-            "h-11 rounded-2xl border bg-white px-4 text-sm outline-none ring-offset-background focus-visible:ring-2 focus-visible:ring-black/30",
-            errors.role
-              ? "border-destructive focus-visible:ring-destructive/30"
-              : "border-black/10",
+        <Controller
+          control={form.control}
+          name="role"
+          render={({ field }) => (
+            <Select value={field.value} onValueChange={field.onChange}>
+              <SelectTrigger
+                id="role"
+                className={cn(
+                  "h-11 w-full rounded-2xl border bg-white px-4 text-sm outline-none focus-visible:ring-2 focus-visible:ring-black/30",
+                  errors.role
+                    ? "border-destructive focus-visible:ring-destructive/30"
+                    : "border-black/10",
+                )}
+              >
+                <SelectValue placeholder="Select role">
+                  {ROLE_LABELS[field.value as keyof typeof ROLE_LABELS]}
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent className="rounded-2xl border border-black/10 bg-white p-1 shadow-lg">
+                {ROLE_VALUES.map((role) => (
+                  <SelectItem
+                    key={role}
+                    value={role}
+                    className="rounded-xl px-3 py-2 text-sm hover:bg-black/5 cursor-pointer"
+                  >
+                    {ROLE_LABELS[role]}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           )}
-          {...form.register("role")}
-        >
-          {ROLE_VALUES.map((role) => (
-            <option key={role} value={role}>
-              {ROLE_LABELS[role]}
-            </option>
-          ))}
-        </select>
+        />
         {errors.role && (
           <p className="text-xs font-semibold text-destructive animate-in fade-in slide-in-from-top-1 duration-200">
             {errors.role.message}

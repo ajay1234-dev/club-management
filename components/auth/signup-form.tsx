@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { signIn } from "next-auth/react";
@@ -11,6 +11,13 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { signupSchema } from "@/lib/validators/auth";
 import { CLUB_SEED } from "@/lib/constants/clubs";
 import { ROLE_LABELS } from "@/lib/constants/roles";
@@ -105,24 +112,40 @@ export function SignupForm({
         <Label htmlFor="role" className={errors.role ? "text-destructive" : ""}>
           Account type
         </Label>
-        <select
-          id="role"
-          className={cn(
-            "h-11 rounded-2xl border bg-white px-4 text-sm outline-none ring-offset-background focus-visible:ring-2 focus-visible:ring-black/30",
-            errors.role
-              ? "border-destructive focus-visible:ring-destructive/30"
-              : "border-black/10",
+        <Controller
+          control={form.control}
+          name="role"
+          render={({ field }) => (
+            <Select value={field.value} onValueChange={field.onChange}>
+              <SelectTrigger
+                id="role"
+                className={cn(
+                  "h-11 w-full rounded-2xl border bg-white px-4 text-sm outline-none focus-visible:ring-2 focus-visible:ring-black/30",
+                  errors.role
+                    ? "border-destructive focus-visible:ring-destructive/30"
+                    : "border-black/10",
+                )}
+              >
+                <SelectValue placeholder="Select account type">
+                  {ROLE_LABELS[field.value as keyof typeof ROLE_LABELS]}
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent className="rounded-2xl border border-black/10 bg-white p-1 shadow-lg">
+                {Object.entries(ROLE_LABELS)
+                  .filter(([key]) => key !== "super_admin")
+                  .map(([key, label]) => (
+                    <SelectItem
+                      key={key}
+                      value={key}
+                      className="rounded-xl px-3 py-2 text-sm hover:bg-black/5 cursor-pointer"
+                    >
+                      {label}
+                    </SelectItem>
+                  ))}
+              </SelectContent>
+            </Select>
           )}
-          {...form.register("role")}
-        >
-          {Object.entries(ROLE_LABELS)
-            .filter(([key]) => key !== "super_admin")
-            .map(([key, label]) => (
-              <option key={key} value={key}>
-                {label}
-              </option>
-            ))}
-        </select>
+        />
         {errors.role && (
           <p className="text-xs font-semibold text-destructive animate-in fade-in slide-in-from-top-1 duration-200">
             {errors.role.message}
@@ -271,23 +294,38 @@ export function SignupForm({
             <Label htmlFor="clubSlug" className={errors.clubSlug ? "text-destructive" : ""}>
               Club
             </Label>
-            <select
-              id="clubSlug"
-              className={cn(
-                "h-11 rounded-2xl border bg-white px-4 text-sm outline-none ring-offset-background focus-visible:ring-2 focus-visible:ring-black/30",
-                errors.clubSlug
-                  ? "border-destructive focus-visible:ring-destructive/30"
-                  : "border-black/10",
+            <Controller
+              control={form.control}
+              name="clubSlug"
+              render={({ field }) => (
+                <Select value={field.value} onValueChange={field.onChange}>
+                  <SelectTrigger
+                    id="clubSlug"
+                    className={cn(
+                      "h-11 w-full rounded-2xl border bg-white px-4 text-sm outline-none focus-visible:ring-2 focus-visible:ring-black/30",
+                      errors.clubSlug
+                        ? "border-destructive focus-visible:ring-destructive/30"
+                        : "border-black/10",
+                    )}
+                  >
+                    <SelectValue placeholder="Select a club">
+                      {clubOptions.find((c) => c.slug === field.value)?.name}
+                    </SelectValue>
+                  </SelectTrigger>
+                  <SelectContent className="rounded-2xl border border-black/10 bg-white p-1 shadow-lg">
+                    {clubOptions.map((club) => (
+                      <SelectItem
+                        key={club.slug}
+                        value={club.slug}
+                        className="rounded-xl px-3 py-2 text-sm hover:bg-black/5 cursor-pointer"
+                      >
+                        {club.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               )}
-              {...form.register("clubSlug")}
-            >
-              <option value="">Select a club</option>
-              {clubOptions.map((club) => (
-                <option key={club.slug} value={club.slug}>
-                  {club.name}
-                </option>
-              ))}
-            </select>
+            />
             {errors.clubSlug && (
               <p className="text-xs font-semibold text-destructive animate-in fade-in slide-in-from-top-1 duration-200">
                 {errors.clubSlug.message}

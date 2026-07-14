@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 
 export default function ForgotPasswordPage() {
   return (
-    <Card className="border-none bg-transparent shadow-none">
+    <Card className="border-none bg-transparent shadow-none ring-0">
       <CardHeader className="px-0 pt-0">
         <CardTitle className="text-2xl font-semibold tracking-tight text-black">
           Reset access

@@ -20,7 +20,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Search
 
   return (
     <FadeIn>
-      <Card className="border-none bg-transparent shadow-none">
+      <Card className="border-none bg-transparent shadow-none ring-0">
         <CardHeader className="px-0 pt-0">
           <CardTitle className="text-3xl font-extrabold tracking-tighter text-black sm:text-4xl">
             Welcome back
