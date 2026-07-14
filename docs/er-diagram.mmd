@@ -1,0 +1,93 @@
+```mermaid
+erDiagram
+  ROLES ||--o{ USERS : assigns
+  CLUBS ||--o{ USERS : optional_affiliation
+  USERS ||--|| STUDENT_PROFILES : has
+  USERS ||--|| CLUB_ADMIN_PROFILES : has
+  USERS ||--o{ SESSIONS : creates
+  USERS ||--o{ PASSWORD_RESET_TOKENS : receives
+  CLUBS ||--o{ CLUB_ADMIN_PROFILES : manages
+
+  ROLES {
+    uuid id PK
+    varchar slug
+    varchar label
+    text description
+    boolean isSystemRole
+    timestamp createdAt
+    timestamp updatedAt
+  }
+
+  CLUBS {
+    uuid id PK
+    varchar slug
+    varchar name
+    text description
+    varchar focus
+    varchar color
+    varchar icon
+    varchar websiteUrl
+    varchar contactEmail
+    timestamp createdAt
+    timestamp updatedAt
+  }
+
+  USERS {
+    uuid id PK
+    uuid roleId FK
+    uuid clubId FK
+    varchar firstName
+    varchar lastName
+    varchar displayName
+    varchar email
+    varchar phone
+    text passwordHash
+    boolean isEmailVerified
+    timestamp lastLoginAt
+    timestamp createdAt
+    timestamp updatedAt
+  }
+
+  STUDENT_PROFILES {
+    uuid id PK
+    uuid userId FK
+    varchar studentId
+    varchar department
+    integer graduationYear
+    text bio
+    timestamp createdAt
+    timestamp updatedAt
+  }
+
+  CLUB_ADMIN_PROFILES {
+    uuid id PK
+    uuid userId FK
+    uuid clubId FK
+    varchar designation
+    varchar approvalStatus
+    timestamp createdAt
+    timestamp updatedAt
+  }
+
+  SESSIONS {
+    uuid id PK
+    uuid userId FK
+    varchar sessionToken
+    timestamp expires
+    varchar ipAddress
+    text userAgent
+    timestamp revokedAt
+    timestamp createdAt
+    timestamp updatedAt
+  }
+
+  PASSWORD_RESET_TOKENS {
+    uuid id PK
+    uuid userId FK
+    varchar tokenHash
+    timestamp expiresAt
+    timestamp usedAt
+    timestamp createdAt
+    timestamp updatedAt
+  }
+```
